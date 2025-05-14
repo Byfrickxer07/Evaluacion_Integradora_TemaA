@@ -8,7 +8,7 @@ let db;
 
 // Inicializar la base de datos
 function initDatabase() {
-    const request = indexedDB.open('EleganzaDB', 1);
+    const request = indexedDB.open('evento', 1);
     
     request.onerror = function(event) {
         console.error('Error al abrir la base de datos:', event.target.error);
@@ -700,23 +700,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
 
-    // Back to top button
-    const backToTopButton = document.querySelector('.back-to-top');
-    
-    if (backToTopButton) {
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300) {
-                backToTopButton.classList.add('active');
-            } else {
-                backToTopButton.classList.remove('active');
-            }
-        });
-        
-        backToTopButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    }
 
     // Smooth scrolling for internal links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
