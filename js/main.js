@@ -1,7 +1,3 @@
-/**
- * Eleganza Eventos - Main JavaScript
- * Theme B
- */
 
 // IndexedDB para reservas
 let db;
