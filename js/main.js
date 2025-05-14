@@ -4,10 +4,11 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Preloader
-    setTimeout(function() {
-        document.getElementById('preloader').style.display = 'none';
-    }, 1000);
+    // Preloader - ocultar inmediatamente
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        preloader.style.display = 'none';
+    }
     
     // Sonido de clic para botones
     const clickSound = new Audio('img/mouse-button-click-308449.mp3');
