@@ -8,6 +8,17 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(function() {
         document.getElementById('preloader').style.display = 'none';
     }, 1000);
+    
+    // Sonido de clic para botones
+    const clickSound = new Audio('img/mouse-button-click-308449.mp3');
+    
+    // Agregar sonido a todos los botones
+    document.querySelectorAll('button, .btn').forEach(button => {
+        button.addEventListener('click', function() {
+            clickSound.currentTime = 0;
+            clickSound.play();
+        });
+    });
 
     // Initialize Bootstrap components
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
