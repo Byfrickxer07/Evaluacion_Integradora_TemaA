@@ -261,9 +261,62 @@ function initMap() {
     }
 }
 
+// Función para verificar si el usuario está logueado
+function checkUserLoggedIn() {
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    
+    if (user) {
+        // Usuario logueado
+        $('#login-nav-item, #register-nav-item').addClass('d-none');
+        $('#user-nav-item, #logout-nav-item').removeClass('d-none');
+        $('#user-profile').text(user.nombre);
+        
+        // Mostrar mensaje de bienvenida si acaba de iniciar sesión
+        const justLoggedIn = sessionStorage.getItem('justLoggedIn');
+        if (justLoggedIn) {
+            sessionStorage.removeItem('justLoggedIn');
+            
+            const alertHTML = `
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    ¡Bienvenido/a, ${user.nombre}! Has iniciado sesión correctamente.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+            
+            const alertContainer = document.createElement('div');
+            alertContainer.className = 'container mt-5 pt-3';
+            alertContainer.innerHTML = alertHTML;
+            
+            const navbar = document.querySelector('.navbar');
+            document.body.insertBefore(alertContainer, navbar.nextSibling);
+            
+            setTimeout(() => {
+                alertContainer.querySelector('.alert').classList.remove('show');
+                setTimeout(() => alertContainer.remove(), 500);
+            }, 3000);
+        }
+    } else {
+        // Usuario no logueado
+        $('#login-nav-item, #register-nav-item').removeClass('d-none');
+        $('#user-nav-item, #logout-nav-item').addClass('d-none');
+    }
+}
+
+// Función para cerrar sesión
+function logout() {
+    // Eliminar datos del usuario del localStorage
+    localStorage.removeItem('user');
+    
+    // Redirigir a la página de inicio
+    window.location.href = 'index.html';
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Inicializar la base de datos
     initDatabase();
+    
+    // Verificar si el usuario está logueado
+    checkUserLoggedIn();
     // Preloader - ocultar inmediatamente
     const preloader = document.getElementById('preloader');
     if (preloader) {
@@ -393,6 +446,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    // Evento de cierre de sesión
+    const logoutLink = document.getElementById('logout-link');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            logout();
+        });
+    }
+    
     // Manejar el envío del formulario de reserva
     const reservationForm = document.getElementById('reservation-form');
     if (reservationForm) {
@@ -420,39 +482,75 @@ document.addEventListener('DOMContentLoaded', function() {
             };
             
             try {
-                // Guardar en IndexedDB
-                await guardarReserva(reserva);
+                // Verificar si el usuario está logueado
+                const user = JSON.parse(localStorage.getItem('user') || 'null');
                 
-                // Mostrar alerta de éxito
-                const alertHTML = `
-                    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-                        <strong>¡Reserva realizada con éxito!</strong> Hemos recibido tu solicitud y nos pondremos en contacto contigo pronto.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                `;
-                
-                const alertContainer = document.createElement('div');
-                alertContainer.innerHTML = alertHTML;
-                reservationForm.parentNode.insertBefore(alertContainer, reservationForm.nextSibling);
-                
-                // Resetear el formulario
-                this.reset();
-                this.classList.remove('was-validated');
-                
-                // Desplazarse a la alerta
-                alertContainer.scrollIntoView({ behavior: 'smooth' });
-                
-                // Eliminar la alerta después de 5 segundos
-                setTimeout(() => {
-                    alertContainer.querySelector('.alert').classList.remove('show');
-                    setTimeout(() => alertContainer.remove(), 500);
-                }, 5000);
-                
+                if (user) {
+                    // Usuario logueado - Guardar en MySQL
+                    $.ajax({
+                        url: 'db/save_reservation.php',
+                        type: 'POST',
+                        data: {
+                            nombre: reserva.nombre,
+                            email: reserva.email,
+                            telefono: reserva.telefono,
+                            tipo_evento: reserva.tipoEvento,
+                            fecha: reserva.fecha,
+                            hora: reserva.hora,
+                            invitados: reserva.invitados,
+                            presupuesto: reserva.presupuesto,
+                            mensaje: reserva.mensaje
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.success) {
+                                showReservationSuccess(reservationForm);
+                            } else {
+                                alert('Error: ' + response.message);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error al guardar la reserva en MySQL:', error);
+                            alert('Ha ocurrido un error al procesar tu reserva. Por favor, inténtalo de nuevo.');
+                        }
+                    });
+                } else {
+                    // Usuario no logueado - Guardar en IndexedDB
+                    await guardarReserva(reserva);
+                    showReservationSuccess(reservationForm);
+                }
             } catch (error) {
                 console.error('Error al guardar la reserva:', error);
                 alert('Ha ocurrido un error al procesar tu reserva. Por favor, inténtalo de nuevo.');
             }
         });
+    }
+    
+    // Función para mostrar mensaje de éxito en reserva
+    function showReservationSuccess(form) {
+        const alertHTML = `
+            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                <strong>¡Reserva realizada con éxito!</strong> Hemos recibido tu solicitud y nos pondremos en contacto contigo pronto.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+        
+        const alertContainer = document.createElement('div');
+        alertContainer.innerHTML = alertHTML;
+        form.parentNode.insertBefore(alertContainer, form.nextSibling);
+        
+        // Resetear el formulario
+        form.reset();
+        form.classList.remove('was-validated');
+        
+        // Desplazarse a la alerta
+        alertContainer.scrollIntoView({ behavior: 'smooth' });
+        
+        // Eliminar la alerta después de 5 segundos
+        setTimeout(() => {
+            alertContainer.querySelector('.alert').classList.remove('show');
+            setTimeout(() => alertContainer.remove(), 500);
+        }, 5000);
     }
     
     // Botón para ver reservas

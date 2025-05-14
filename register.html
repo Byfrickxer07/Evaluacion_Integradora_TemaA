@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Eleganza Eventos</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="styles.css" rel="stylesheet">
+    <style>
+        .register-container {
+            max-width: 500px;
+            margin: 80px auto;
+            padding: 30px;
+            background-color: var(--light-bg);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo-container h1 {
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .btn-register {
+            background-color: var(--primary-color);
+            color: white;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        .btn-register:hover {
+            background-color: var(--primary-dark);
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="register-container">
+            <div class="logo-container">
+                <h1>Eleganza Eventos</h1>
+                <p>Crea una nueva cuenta</p>
+            </div>
+            
+            <div id="alert-container"></div>
+            
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="nombre" class="form-label">Nombre Completo</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                    <small class="text-muted">La contraseña debe tener al menos 6 caracteres.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm_password" class="form-label">Confirmar Contraseña</label>
+                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-register">Registrarse</button>
+            </form>
+            
+            <div class="login-link">
+                <p>¿Ya tienes una cuenta? <a href="login.html">Inicia sesión aquí</a></p>
+            </div>
+            
+            <div class="text-center mt-3">
+                <a href="index.html" class="btn btn-link"><i class="fas fa-arrow-left"></i> Volver al Inicio</a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Manejar envío del formulario de registro
+            $('#register-form').on('submit', function(e) {
+                e.preventDefault();
+                
+                // Obtener datos del formulario
+                const nombre = $('#nombre').val();
+                const email = $('#email').val();
+                const password = $('#password').val();
+                const confirm_password = $('#confirm_password').val();
+                
+                // Validar contraseñas
+                if (password !== confirm_password) {
+                    $('#alert-container').html(`
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            Las contraseñas no coinciden.
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    `);
+                    return;
+                }
+                
+                // Enviar solicitud AJAX
+                $.ajax({
+                    url: 'db/register.php',
+                    type: 'POST',
+                    data: {
+                        nombre: nombre,
+                        email: email,
+                        password: password,
+                        confirm_password: confirm_password
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            // Mostrar mensaje de éxito
+                            $('#alert-container').html(`
+                                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                    ${response.message}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            `);
+                            
+                            // Limpiar formulario
+                            $('#register-form')[0].reset();
+                            
+                            // Redirigir a la página de login después de 3 segundos
+                            setTimeout(function() {
+                                window.location.href = 'login.html';
+                            }, 3000);
+                        } else {
+                            // Mostrar mensaje de error
+                            $('#alert-container').html(`
+                                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    ${response.message}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            `);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Mostrar mensaje de error
+                        $('#alert-container').html(`
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                Error en la solicitud: ${error}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        `);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
