@@ -578,10 +578,10 @@ a:hover {
 
 /* Reservation Section */
 .reservation-form {
-    background-color: var(--white);
+    background-color: var(--light-bg);
     padding: 30px;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="dark"] .reservation-form {
@@ -628,8 +628,10 @@ a:hover {
 }
 
 #map {
-    height: 200px;
+    height: 300px;
+    width: 100%;
     border-radius: var(--border-radius);
+    margin-bottom: 20px;
 }
 
 /* Contact Section */

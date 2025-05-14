@@ -5,15 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Salón de Eventos Eleganza</title>
     <!-- Bootstrap 5 CSS -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Maps API - Comentado para evitar bloqueos -->
     <!-- <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script> -->
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <!-- Lightbox CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css">
+    <link href="styles.css" rel="stylesheet">
 
 </head>
 <body data-bs-spy="scroll" data-bs-target="#navbar" data-theme="light">
@@ -292,8 +293,6 @@
                         <button class="btn btn-filter active" data-filter="all">Todos</button>
                         <button class="btn btn-filter" data-filter="bodas">Bodas</button>
                         <button class="btn btn-filter" data-filter="cumpleanos">Cumpleaños</button>
-                        <button class="btn btn-filter" data-filter="corporativos">Corporativos</button>
-                        <button class="btn btn-filter" data-filter="otros">Otros</button>
                     </div>
                 </div>
             </div>
@@ -383,7 +382,7 @@
             <div class="row">
                 <div class="col-lg-7">
                     <div class="reservation-form">
-                        <form id="reservation-form" action="backend/process_reservation.php" method="POST">
+                        <form id="reservation-form">
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label for="nombre" class="form-label">Nombre completo</label>
@@ -469,6 +468,7 @@
                                 </div>
                                 <div class="col-12">
                                     <button type="submit" class="btn btn-primary">Enviar Solicitud</button>
+                                    <button type="button" class="btn btn-secondary ms-2" id="ver-reservas-btn">Ver Mis Reservas</button>
                                 </div>
                             </div>
                         </form>
@@ -542,6 +542,31 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Lightbox JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+    <!-- Modal para mostrar reservas -->
+    <div class="modal fade" id="reservasModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Mis Reservas</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="reservas-list" class="list-group">
+                        <!-- Las reservas se cargarán dinámicamente aquí -->
+                    </div>
+                    <div id="no-reservas" class="text-center py-3 d-none">
+                        <p>No tienes reservas guardadas.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBDaeWicvigtP9xPv919E-RNoxfvC-Hqik&callback=initMap" async defer></script>
     <!-- Custom JS -->
     <script src="js/main.js"></script>
 </body>
