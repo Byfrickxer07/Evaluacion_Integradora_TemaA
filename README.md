@@ -39,6 +39,32 @@ Este repositorio contiene el código fuente para el sitio web de "Eleganza Event
 - Mapa interactivo que muestra la ubicación del salón de eventos
 - Marcador personalizado con información adicional
 
+## Cómo Configurar y Ejecutar el Sitio con XAMPP
+
+### Requisitos Previos
+- XAMPP instalado (Apache, MySQL, PHP)
+- Navegador web moderno (Chrome, Firefox, Edge, etc.)
+- Conexión a internet (para cargar las dependencias externas como Bootstrap, jQuery, etc.)
+
+### Pasos para Configurar la Base de Datos
+
+1. Inicia XAMPP Control Panel y asegúrate de que los servicios Apache y MySQL estén activos (botones en verde)
+2. Abre tu navegador y ve a `http://localhost/phpmyadmin`
+3. Crea una nueva base de datos haciendo clic en "Nueva" en el panel izquierdo
+4. Nombra la base de datos `evento` y selecciona `utf8mb4_general_ci` como cotejamiento
+5. Una vez creada la base de datos, selecciónala en el panel izquierdo
+6. Haz clic en la pestaña "Importar"
+7. Haz clic en "Examinar" y navega hasta la carpeta `database` del proyecto
+8. Selecciona el archivo SQL que contiene la estructura y datos de la base de datos
+9. Haz clic en "Continuar" para importar la base de datos
+
+### Pasos para Abrir la Página Web
+
+1. Asegúrate de que el proyecto esté ubicado en la carpeta `htdocs` de XAMPP (normalmente en `C:\xampp\htdocs\Evaluacion_Integradora_TemaA`)
+2. Abre tu navegador web
+3. Navega a `http://localhost/Evaluacion_Integradora_TemaA`
+4. La página web de Eleganza Eventos debería cargarse correctamente
+
 ## Cómo Clonar y Probar el Sitio
 
 ### Requisitos Previos
